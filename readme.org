@@ -1,0 +1,51 @@
+# obfuscat
+
+Simple tool that replaces sensitive phrases with code-phrases. Similar
+to NSA code-words[1].
+
+A typical use-case is if you have a bunch of entities whose identity
+should not be known to 3rd parties, but those 3rd parties need to do
+statistics on data about those entities. For example obfuscating your
+clients identities while providing information about your projects to
+an accountant that works in the cloud.
+
+Usage is simple
+
+** Creating a new code-phrase
+
+#+BEGIN_EXAMPLE
+% ./obfuscat.py "secret cust1 super secret project0" "my accounting obfuscat pepper" 5
+blackjack-matchmaker-pheasant-hideaway-uproot
+#+END_EXAMPLE
+
+The tool needs 3 parameters:
+   1. the sensitive phrase
+   2. a static non-public pepper
+   3. the number of code-words in the code-phrase
+
+The pepper serves dual purpose, one it foils pre-computation attacks,
+and it also serves as the filename for storing all
+sensitive - code-phrase mappings. The pepper phrase and the file which
+has the name as the pepper phrase postfixed with ".map" should be kept
+inside your organization and not shared with the 3rd party or anyone
+else. It is assumed that both the pepper and the .map file do not have
+any value in your organization, since your members have already access
+to both values of any mapping.
+
+The number of code-words in the code-phrase are a compromise between
+length of code-phrases and number of sensitive phrases that can
+maximum be mapped.
+
+** Mapping back a code-phrase to its original
+
+#+BEGIN_EXAMPLE
+% ./obfuscat.py -d blackjack-matchmaker-pheasant-hideaway-uproot "my accounting obfuscat pepper"
+secret cust1 super secret project0
+#+END_EXAMPLE
+
+The unmasking of code-phrases has 3 parameters as well:
+  - the "-d" switch
+  - the code-phrase
+  - the pepper (and implicitly also the .map file)
+
+[1] https://www.electrospaces.net/p/nsas-tao-division-codewords.html
